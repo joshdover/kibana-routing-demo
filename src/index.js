@@ -1,12 +1,42 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { appService } from './appService';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import { Dashboard } from './dashboard';
+import { Visualize } from './visualize';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+appService.registerApp({
+  id: 'visualize',
+  name: 'Visualize',
+  mount(context, domElem) {
+    ReactDOM.render(<Visualize {...context} />, domElem);
+    return () => {
+      ReactDOM.unmountComponentAtNode(domElem);
+    }
+  }
+});
+
+appService.registerApp({
+  id: 'dashboard',
+  name: 'Dashboard',
+  mount(context, domElem) {
+    ReactDOM.render(<Dashboard {...context} />, domElem);
+    return () => {
+      ReactDOM.unmountComponentAtNode(domElem);
+    }
+  }
+});
+
+appService.registerApp({
+  id: 'management',
+  name: 'Management',
+  mount(context, domElem) {
+    domElem.innerHTML = `
+      <h2>Management</h2>
+      <div>Non-react app!</div>
+    `;
+    return () => domElem.innerHTML = '';
+  }
+})
+
+appService.start(document.getElementById('root'));
